@@ -1,15 +1,21 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour
 {
     // Member variables
     [SerializeField] float controlRotate = 100f;
     [SerializeField] float controlThrust = 100f;
+    [SerializeField] AudioClip mainEngineSound;
+    [SerializeField] AudioClip successSound;
+    [SerializeField] AudioClip deathSound;
+
+
     Rigidbody rigidbody;
     AudioSource audioSource;
+
+    enum State { Alive, Dying, Transcending }
+    State state = State.Alive;
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +30,13 @@ public class Rocket : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Thrust();
-        Rotate();
+        // Player only can control when the rocket is alive
+        if(state == State.Alive)
+        {
+            Thrust();
+            Rotate();
+        }
+        
     }
 
     private void Thrust()
@@ -39,7 +50,7 @@ public class Rocket : MonoBehaviour
 
             // So it doesn't layer each other
             if (!audioSource.isPlaying)
-                audioSource.Play();
+                audioSource.PlayOneShot(mainEngineSound);
         }
         else
         {
@@ -69,15 +80,45 @@ public class Rocket : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (state != State.Alive) { return; } // Ignore the collision
+
         switch(collision.gameObject.tag)
         {
             case "SafetyZone":
-                print("Ok");
+                // Do nothing
+                break;
+            case "Finish":
+                ProcessFinish();
                 break;
             default:
-                print("Dead");
+                ProcessDead();
                 break;
         }
     }
 
+    private void ProcessFinish()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(successSound);
+        state = State.Transcending;
+        Invoke("LoadNextLevel", 2f);
+    }
+
+    private void ProcessDead()
+    {
+        audioSource.Stop();
+        audioSource.PlayOneShot(deathSound);
+        state = State.Dying;
+        Invoke("LoadFirstLevel", 1f);
+    }
+
+    private void LoadFirstLevel()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    private void LoadNextLevel()
+    {
+        SceneManager.LoadScene(1);
+    }
 }

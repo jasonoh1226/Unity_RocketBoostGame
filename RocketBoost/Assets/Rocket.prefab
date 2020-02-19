@@ -173,7 +173,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e11e6489d3c34a2395225be05b87d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controlThrust: 200
+  controlRotate: 250
+  controlThrust: 50
+  mainEngineSound: {fileID: 8300000, guid: 969d474dcfc4a44f0968c85585ee6304, type: 3}
+  successSound: {fileID: 8300000, guid: d856c64abccdb4d5d89f4cda1b2903df, type: 3}
+  deathSound: {fileID: 8300000, guid: 9013306208da14d2dbfac87fdcc9169a, type: 3}
 --- !u!82 &5410567197051749694
 AudioSource:
   m_ObjectHideFlags: 0
@@ -184,7 +188,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 969d474dcfc4a44f0968c85585ee6304, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 0.8
