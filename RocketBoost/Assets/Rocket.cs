@@ -6,6 +6,7 @@ using UnityEngine;
 public class Rocket : MonoBehaviour
 {
     // Member variables
+    [SerializeField] float controlRotate = 100f;
     [SerializeField] float controlThrust = 100f;
     Rigidbody rigidbody;
     AudioSource audioSource;
@@ -29,10 +30,12 @@ public class Rocket : MonoBehaviour
 
     private void Thrust()
     {
+        float thrustThisFrame = controlRotate * Time.deltaTime;
+
         // Can thrust while rotating
         if (Input.GetKey(KeyCode.Space))
         {
-            rigidbody.AddRelativeForce(Vector3.up);
+            rigidbody.AddRelativeForce(Vector3.up * thrustThisFrame);
 
             // So it doesn't layer each other
             if (!audioSource.isPlaying)
@@ -49,7 +52,7 @@ public class Rocket : MonoBehaviour
         // Take manual control of rotation
         rigidbody.freezeRotation = true;
 
-        float rotationThisFrame = controlThrust * Time.deltaTime;
+        float rotationThisFrame = controlRotate * Time.deltaTime;
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
@@ -64,5 +67,17 @@ public class Rocket : MonoBehaviour
         rigidbody.freezeRotation = false;
     }
 
-    
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch(collision.gameObject.tag)
+        {
+            case "SafetyZone":
+                print("Ok");
+                break;
+            default:
+                print("Dead");
+                break;
+        }
+    }
+
 }
